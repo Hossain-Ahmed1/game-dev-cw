@@ -12,6 +12,7 @@
 #include "GUILabel.h"
 #include "Explosion.h"
 
+
 // PUBLIC INSTANCE CONSTRUCTORS ///////////////////////////////////////////////
 
 /** Constructor. Takes arguments from command line, just in case. */
@@ -21,8 +22,12 @@ Asteroids::Asteroids(int argc, char* argv[])
 	mLevel = 0;
 	mAsteroidCount = 0;
 	mScreen = "start";
+	mDifficulty = true;
 }
 
+shared_ptr<GUIComponent> newt;
+shared_ptr<GUIComponent> instruction4;
+shared_ptr<GUILabel> difficulty_label;
 /** Destructor. */
 Asteroids::~Asteroids(void)
 {
@@ -89,13 +94,26 @@ void Asteroids::Stop()
 
 //starts the game 
 void Asteroids::StartGame() {
-	mStartGameLabel->SetVisible(false);
 	mScoreLabel->SetVisible(true);
 	mLivesLabel->SetVisible(true);
 	// Create a spaceship and add it to the world
 	mGameWorld->AddObject(CreateSpaceship());
 	// Create some asteroids and add them to the world
 	CreateAsteroids(10);
+}
+
+void Asteroids::CloseStart() {
+	mStartGameLabel->SetVisible(false);
+	mInstructionLabel->SetVisible(false);
+	difficulty_label->SetVisible(false);
+}
+
+void Asteroids::ShowInstructions() {
+	mInstructions->SetVisible(true);
+	mInstructions2->SetVisible(true);
+	mInstructions3->SetVisible(true);
+	newt->SetVisible(true);
+	instruction4->SetVisible(true);
 }
 // PUBLIC INSTANCE METHODS IMPLEMENTING IKeyboardListener /////////////////////
 
@@ -109,14 +127,28 @@ void Asteroids::OnKeyPressed(uchar key, int x, int y)
 		break;
 		//starts the game when s is pressed
 	case 's':
-		if (mScreen == "start"){
+		if (mScreen == "start") {
 			mScreen = "game";
+			CloseStart();
 			StartGame();
 		}
 		break;
 	case 'i':
 		if (mScreen == "start") {
 			mScreen = "instruction";
+			CloseStart();
+			ShowInstructions();
+		}
+		break;
+	case 'd':
+		if (mScreen == "start") {
+			mDifficulty = !mDifficulty;
+			if (mDifficulty) {
+				difficulty_label->SetText("press 'd' to set difficulty, set to: easy");
+			}
+			else {
+				difficulty_label->SetText("press 'd' to set difficulty, set to: hard");
+			}
 		}
 		break;
 	default:
@@ -125,11 +157,7 @@ void Asteroids::OnKeyPressed(uchar key, int x, int y)
 }
 
 void Asteroids::OnKeyReleased(uchar key, int x, int y) {
-	switch (key)
-	{
-	default:
-		break;
-	}
+
 }
 
 void Asteroids::OnSpecialKeyPressed(int key, int x, int y)
@@ -147,8 +175,27 @@ void Asteroids::OnSpecialKeyPressed(int key, int x, int y)
 		default: break;
 		}
 	}
+	else if (key == GLUT_KEY_HOME) {
+		if (mScreen == "instruction") {
+			mScreen = "start";
+			OpenStart();
+			CloseInstructions();
+		}
+	}
+}
+void Asteroids::OpenStart() {
+	mStartGameLabel->SetVisible(true);
+	mInstructionLabel->SetVisible(true);
+	difficulty_label->SetVisible(true);
 }
 
+void Asteroids::CloseInstructions() {
+	mInstructions->SetVisible(false);
+	mInstructions2->SetVisible(false);
+	mInstructions3->SetVisible(false);
+	newt->SetVisible(false);
+	instruction4->SetVisible(false);
+}
 void Asteroids::OnSpecialKeyReleased(int key, int x, int y)
 
 {
@@ -288,10 +335,6 @@ void Asteroids::CreateGUI()
 	shared_ptr<GUIComponent> game_over_component
 		= static_pointer_cast<GUIComponent>(mGameOverLabel);
 	mGameDisplay->GetContainer()->AddComponent(game_over_component, GLVector2f(0.5f, 0.5f));
-
-	//start menu
-	// 
-	//start label
 	// Create a new GUILabel and wrap it up in a shared_ptr
 	mStartGameLabel = shared_ptr<GUILabel>(new GUILabel("Start: press 's' to start"));
 	// Set the horizontal alignment of the label to GUI_HALIGN_CENTER
@@ -304,6 +347,7 @@ void Asteroids::CreateGUI()
 	mGameDisplay->GetContainer()->AddComponent(start_game_component, GLVector2f(0.5f, 0.8f));
 
 
+
 	//instruction label
 	// Create a new GUILabel and wrap it up in a shared_ptr
 	mInstructionLabel = shared_ptr<GUILabel>(new GUILabel("Start: press 'i' for instructions"));
@@ -314,6 +358,68 @@ void Asteroids::CreateGUI()
 	shared_ptr<GUIComponent> instruction_componet
 		= static_pointer_cast<GUIComponent>(mInstructionLabel);
 	mGameDisplay->GetContainer()->AddComponent(instruction_componet, GLVector2f(0.5f, 0.6f));
+
+	//instruction label
+// Create a new GUILabel and wrap it up in a shared_ptr
+	mInstructions = shared_ptr<GUILabel>(new GUILabel("Score high by blasting asteroids"));
+	// Set the horizontal alignment of the label to GUI_HALIGN_CENTER
+	mInstructions->SetHorizontalAlignment(GUIComponent::GUI_HALIGN_CENTER);
+	// Set the vertical alignment of the label to GUI_VALIGN_MIDDLE
+	mInstructions->SetVerticalAlignment(GUIComponent::GUI_VALIGN_MIDDLE);
+	mInstructions->SetVisible(false);
+	shared_ptr<GUIComponent> instructions_component
+		= static_pointer_cast<GUIComponent>(mInstructions);
+	mGameDisplay->GetContainer()->AddComponent(instructions_component, GLVector2f(0.5f, 0.9f));
+
+	// Create a new GUILabel and wrap it up in a shared_ptr
+	mInstructions2 = shared_ptr<GUILabel>(new GUILabel("press space to shoot and up arrow to thrust"));
+	// Set the horizontal alignment of the label to GUI_HALIGN_CENTER
+	mInstructions2->SetHorizontalAlignment(GUIComponent::GUI_HALIGN_CENTER);
+	// Set the vertical alignment of the label to GUI_VALIGN_MIDDLE
+	mInstructions2->SetVerticalAlignment(GUIComponent::GUI_VALIGN_MIDDLE);
+	mInstructions2->SetVisible(false);
+	shared_ptr<GUIComponent> instructions_component2
+		= static_pointer_cast<GUIComponent>(mInstructions2);
+	mGameDisplay->GetContainer()->AddComponent(instructions_component2, GLVector2f(0.5f, 0.8f));
+
+	// Create a new GUILabel and wrap it up in a shared_ptr
+	mInstructions3 = shared_ptr<GUILabel>(new GUILabel("use your left and right arrows key to steer"));
+	// Set the horizontal alignment of the label to GUI_HALIGN_CENTER
+	mInstructions3->SetHorizontalAlignment(GUIComponent::GUI_HALIGN_CENTER);
+	// Set the vertical alignment of the label to GUI_VALIGN_MIDDLE
+	mInstructions3->SetVerticalAlignment(GUIComponent::GUI_VALIGN_MIDDLE);
+	mInstructions3->SetVisible(false);
+	shared_ptr<GUIComponent> instructions_component3
+		= static_pointer_cast<GUIComponent>(mInstructions3);
+	mGameDisplay->GetContainer()->AddComponent(instructions_component3, GLVector2f(0.5f, 0.7f));
+
+	newt = shared_ptr<GUILabel>(new GUILabel("to avoid the asteroids"));
+	// Set the horizontal alignment of the label to GUI_HALIGN_CENTER
+	newt->SetHorizontalAlignment(GUIComponent::GUI_HALIGN_CENTER);
+	newt->SetVerticalAlignment(GUIComponent::GUI_VALIGN_MIDDLE);
+	newt->SetVisible(false);
+	shared_ptr<GUIComponent> newt_comp
+		= static_pointer_cast<GUIComponent>(newt);
+	mGameDisplay->GetContainer()->AddComponent(newt_comp, GLVector2f(0.5f, 0.6f));
+
+	instruction4 = shared_ptr<GUILabel>(new GUILabel("press HOME to go back"));
+	// Set the horizontal alignment of the label to GUI_HALIGN_CENTER
+	instruction4->SetHorizontalAlignment(GUIComponent::GUI_HALIGN_CENTER);
+	instruction4->SetVerticalAlignment(GUIComponent::GUI_VALIGN_MIDDLE);
+	instruction4->SetVisible(false);
+	shared_ptr<GUIComponent> instruction4_comp
+		= static_pointer_cast<GUIComponent>(instruction4);
+	mGameDisplay->GetContainer()->AddComponent(instruction4_comp, GLVector2f(0.5f, 0.5f));
+
+	// Create a new GUILabel and wrap it up in a shared_ptr
+	difficulty_label = make_shared<GUILabel>("press 'd' to set difficulty, set to: easy");
+	// Set the vertical alignment of the label to GUI_VALIGN_TOP
+	difficulty_label->SetHorizontalAlignment(GUIComponent::GUI_HALIGN_CENTER);
+	difficulty_label->SetVerticalAlignment(GUIComponent::GUI_VALIGN_MIDDLE);
+	// Add the GUILabel to the GUIComponent  
+	shared_ptr<GUIComponent> difficulty_label_component
+		= static_pointer_cast<GUIComponent>(difficulty_label);
+	mGameDisplay->GetContainer()->AddComponent(difficulty_label_component, GLVector2f(0.5f, 0.4f));
 
 }
 
@@ -362,4 +468,7 @@ shared_ptr<GameObject> Asteroids::CreateExplosion()
 	explosion->Reset();
 	return explosion;
 }
+
+
+
 

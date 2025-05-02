@@ -51,21 +51,30 @@ public:
 
 private:
 	shared_ptr<Spaceship> mSpaceship;
+
 	shared_ptr<GUILabel> mScoreLabel;
 	shared_ptr<GUILabel> mLivesLabel;
 	shared_ptr<GUILabel> mGameOverLabel;
 	shared_ptr<GUILabel> mStartGameLabel;
 	shared_ptr<GUILabel> mInstructionLabel;
+	shared_ptr<GUILabel> mInstructions;
+	shared_ptr<GUILabel> mInstructions2;
+	shared_ptr<GUILabel> mInstructions3;
 
 	uint mLevel;
 	uint mAsteroidCount;
 	string mScreen;
+	bool mDifficulty;
 
 	void ResetSpaceship();
 	shared_ptr<GameObject> CreateSpaceship();
 	void CreateGUI();
 	void CreateAsteroids(const uint num_asteroids);
 	void StartGame();
+	void CloseStart();
+	void ShowInstructions();
+	void OpenStart();
+	void CloseInstructions();
 	shared_ptr<GameObject> CreateExplosion();
 
 	const static uint SHOW_GAME_OVER = 0;
