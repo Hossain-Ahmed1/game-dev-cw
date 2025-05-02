@@ -1,12 +1,6 @@
 ﻿cl : command line  warning D9035: option 'Gm' has been deprecated and will be removed in a future release
-  Spaceship.cpp
-  main.cpp
-  Explosion.cpp
-  Bullet.cpp
   Asteroids.cpp
-D:\Documents\Uni\year 3\games tech\game-dev-cw2\src\Asteroids.cpp(125,2): warning C4065: switch statement contains 'default' but no 'case' labels
-  Asteroid.cpp
-  Generating Code...
+D:\Documents\Uni\year 3\games tech\game-dev-cw2\src\Asteroids.cpp(128,2): warning C4065: switch statement contains 'default' but no 'case' labels
 Asteroid.obj : warning LNK4075: ignoring '/EDITANDCONTINUE' due to '/SAFESEH' specification
   Asteroids.vcxproj -> D:\Documents\Uni\year 3\games tech\game-dev-cw2\bin\Asteroids.exe
   ..\..\assets\asteroid.shape

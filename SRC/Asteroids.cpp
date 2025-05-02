@@ -109,8 +109,15 @@ void Asteroids::OnKeyPressed(uchar key, int x, int y)
 		break;
 		//starts the game when s is pressed
 	case 's':
-		mScreen = "game";
-		StartGame();
+		if (mScreen == "start"){
+			mScreen = "game";
+			StartGame();
+		}
+		break;
+	case 'i':
+		if (mScreen == "start") {
+			mScreen = "instruction";
+		}
 		break;
 	default:
 		break;
@@ -281,6 +288,10 @@ void Asteroids::CreateGUI()
 	shared_ptr<GUIComponent> game_over_component
 		= static_pointer_cast<GUIComponent>(mGameOverLabel);
 	mGameDisplay->GetContainer()->AddComponent(game_over_component, GLVector2f(0.5f, 0.5f));
+
+	//start menu
+	// 
+	//start label
 	// Create a new GUILabel and wrap it up in a shared_ptr
 	mStartGameLabel = shared_ptr<GUILabel>(new GUILabel("Start: press 's' to start"));
 	// Set the horizontal alignment of the label to GUI_HALIGN_CENTER
@@ -290,7 +301,20 @@ void Asteroids::CreateGUI()
 	shared_ptr<GUIComponent> start_game_component
 		= static_pointer_cast<GUIComponent>(mStartGameLabel);
 
-	mGameDisplay->GetContainer()->AddComponent(start_game_component, GLVector2f(0.5f, 0.5f));
+	mGameDisplay->GetContainer()->AddComponent(start_game_component, GLVector2f(0.5f, 0.8f));
+
+
+	//instruction label
+	// Create a new GUILabel and wrap it up in a shared_ptr
+	mInstructionLabel = shared_ptr<GUILabel>(new GUILabel("Start: press 'i' for instructions"));
+	// Set the horizontal alignment of the label to GUI_HALIGN_CENTER
+	mInstructionLabel->SetHorizontalAlignment(GUIComponent::GUI_HALIGN_CENTER);
+	// Set the vertical alignment of the label to GUI_VALIGN_MIDDLE
+	mInstructionLabel->SetVerticalAlignment(GUIComponent::GUI_VALIGN_MIDDLE);
+	shared_ptr<GUIComponent> instruction_componet
+		= static_pointer_cast<GUIComponent>(mInstructionLabel);
+	mGameDisplay->GetContainer()->AddComponent(instruction_componet, GLVector2f(0.5f, 0.6f));
+
 }
 
 void Asteroids::OnScoreChanged(int score)
