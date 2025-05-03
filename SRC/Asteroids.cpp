@@ -27,7 +27,12 @@ Asteroids::Asteroids(int argc, char* argv[])
 
 shared_ptr<GUIComponent> newt;
 shared_ptr<GUIComponent> instruction4;
+shared_ptr<GUIComponent> askHighScore;
+shared_ptr<GUIComponent> askName;
+shared_ptr<GUILabel> table_label;
 shared_ptr<GUILabel> difficulty_label;
+shared_ptr<GUILabel> name_label;
+string mname = "";
 /** Destructor. */
 Asteroids::~Asteroids(void)
 {
@@ -119,6 +124,11 @@ void Asteroids::ShowInstructions() {
 
 void Asteroids::OnKeyPressed(uchar key, int x, int y)
 {
+	if (mScreen == "enter name" && mname.length() < 9) {
+		string k(1, key);
+		mname = mname + k;
+		name_label->SetText("name: " + mname);
+	}
 	switch (key)
 	{
 	case ' ':
@@ -150,8 +160,16 @@ void Asteroids::OnKeyPressed(uchar key, int x, int y)
 				difficulty_label->SetText("press 'd' to set difficulty, set to: hard");
 			}
 		}
+	case 'h':
+		if (mScreen == "game over") {
+			mScreen = "enter name";
+			askHighScore->SetVisible(false);
+			askName->SetVisible(true);
+			name_label->SetVisible(true);
+		}
 		break;
 	default:
+
 		break;
 	}
 }
@@ -181,6 +199,22 @@ void Asteroids::OnSpecialKeyPressed(int key, int x, int y)
 			OpenStart();
 			CloseInstructions();
 		}
+	}
+	else if (key == GLUT_KEY_INSERT && mScreen == "enter name") {
+		mScreen = "high score";
+		askName->SetVisible(false);
+		name_label->SetVisible(false);
+		int score = mScoreKeeper.Getscore();
+		// Format the score message using an string-based stream
+		std::ostringstream msg_stream;
+
+		msg_stream << mname << " Score: " << score;
+		// Get the score message as a string
+		std::string score_msg = msg_stream.str();
+
+		table_label->SetText(score_msg);
+		table_label->SetVisible(true);
+
 	}
 }
 void Asteroids::OpenStart() {
@@ -254,6 +288,11 @@ void Asteroids::OnTimer(int value)
 	if (value == SHOW_GAME_OVER)
 	{
 		mGameOverLabel->SetVisible(true);
+	}
+	if (value == GO_HIGH_SCORE) {
+		mScreen = "game over";
+		mGameOverLabel->SetVisible(false);
+		askHighScore->SetVisible(true);
 	}
 
 }
@@ -421,6 +460,43 @@ void Asteroids::CreateGUI()
 		= static_pointer_cast<GUIComponent>(difficulty_label);
 	mGameDisplay->GetContainer()->AddComponent(difficulty_label_component, GLVector2f(0.5f, 0.4f));
 
+	askHighScore = shared_ptr<GUILabel>(new GUILabel("Press 'h' for to save your score "));
+	// Set the horizontal alignment of the label to GUI_HALIGN_CENTER
+	askHighScore->SetHorizontalAlignment(GUIComponent::GUI_HALIGN_CENTER);
+	askHighScore->SetVerticalAlignment(GUIComponent::GUI_VALIGN_MIDDLE);
+	askHighScore->SetVisible(false);
+	shared_ptr<GUIComponent> askHighScore_comp
+		= static_pointer_cast<GUIComponent>(askHighScore);
+	mGameDisplay->GetContainer()->AddComponent(askHighScore_comp, GLVector2f(0.5f, 0.5f));
+
+	askName = shared_ptr<GUILabel>(new GUILabel("enter name, press INSERT to submit"));
+	// Set the horizontal alignment of the label to GUI_HALIGN_CENTER
+	askName->SetHorizontalAlignment(GUIComponent::GUI_HALIGN_CENTER);
+	askName->SetVerticalAlignment(GUIComponent::GUI_VALIGN_MIDDLE);
+	askName->SetVisible(false);
+	shared_ptr<GUIComponent> askName_comp
+		= static_pointer_cast<GUIComponent>(askName);
+	mGameDisplay->GetContainer()->AddComponent(askName_comp, GLVector2f(0.5f, 0.7f));
+
+	name_label = make_shared<GUILabel>("name: ");
+	// Set the horizontal alignment of the label to GUI_HALIGN_CENTER
+	name_label->SetHorizontalAlignment(GUIComponent::GUI_HALIGN_CENTER);
+	name_label->SetVerticalAlignment(GUIComponent::GUI_VALIGN_MIDDLE);
+	name_label->SetVisible(false);
+	shared_ptr<GUIComponent> name_label_comp
+		= static_pointer_cast<GUIComponent>(name_label);
+	mGameDisplay->GetContainer()->AddComponent(name_label_comp, GLVector2f(0.5f, 0.5f));
+
+
+	table_label = make_shared<GUILabel>("Your score");
+	// Set the horizontal alignment of the label to GUI_HALIGN_CENTER
+	table_label->SetHorizontalAlignment(GUIComponent::GUI_HALIGN_CENTER);
+	table_label->SetVerticalAlignment(GUIComponent::GUI_VALIGN_MIDDLE);
+	table_label->SetVisible(false);
+	shared_ptr<GUIComponent> table_label_comp
+		= static_pointer_cast<GUIComponent>(table_label);
+	mGameDisplay->GetContainer()->AddComponent(table_label_comp, GLVector2f(0.5f, 0.9f));
+
 }
 
 void Asteroids::OnScoreChanged(int score)
@@ -454,6 +530,7 @@ void Asteroids::OnPlayerKilled(int lives_left)
 	else
 	{
 		SetTimer(500, SHOW_GAME_OVER);
+		SetTimer(1000, GO_HIGH_SCORE);
 	}
 }
 
