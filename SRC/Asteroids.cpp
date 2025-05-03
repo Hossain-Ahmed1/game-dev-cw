@@ -11,7 +11,28 @@
 #include "BoundingSphere.h"
 #include "GUILabel.h"
 #include "Explosion.h"
+#include <iostream>
+#include <fstream> 
+#include <sstream>
+#include <vector>
+#include <string>
+#include <vector>
 
+//function provided by https://medium.com/@ryan_forrester_/splitting-strings-in-c-a-complete-guide-cf162837f4ba
+std::vector<std::string> split(const std::string& str, char delimiter) {
+	std::vector<std::string> tokens;
+	size_t start = 0;
+	size_t end = str.find(delimiter);
+
+	while (end != std::string::npos) {
+		tokens.push_back(str.substr(start, end - start));
+		start = end + 1;
+		end = str.find(delimiter, start);
+	}
+
+	tokens.push_back(str.substr(start));
+	return tokens;
+}
 
 // PUBLIC INSTANCE CONSTRUCTORS ///////////////////////////////////////////////
 
@@ -32,6 +53,10 @@ shared_ptr<GUIComponent> askName;
 shared_ptr<GUILabel> table_label;
 shared_ptr<GUILabel> difficulty_label;
 shared_ptr<GUILabel> name_label;
+shared_ptr<GUILabel> topScore_label;
+shared_ptr<GUILabel> top1_label;
+shared_ptr<GUILabel> top2_label;
+shared_ptr<GUILabel> top3_label;
 string mname = "";
 /** Destructor. */
 Asteroids::~Asteroids(void)
@@ -93,6 +118,7 @@ void Asteroids::Start()
 /** Stop the current game. */
 void Asteroids::Stop()
 {
+
 	// Stop the game
 	GameSession::Stop();
 }
@@ -208,13 +234,57 @@ void Asteroids::OnSpecialKeyPressed(int key, int x, int y)
 		// Format the score message using an string-based stream
 		std::ostringstream msg_stream;
 
+		string highscores;
+
 		msg_stream << mname << " Score: " << score;
 		// Get the score message as a string
 		std::string score_msg = msg_stream.str();
+		ofstream write_file("highscore.txt", ios::app);
+		write_file << "," << mname<<":"<<score;
+		write_file.close();
+
+		ifstream highscores_file("highscore.txt");
+		//read file
+		highscores_file >> highscores;
+		//write file
+		highscores_file.close();
+			
+		vector<string> scores = split(highscores,',');
+
+		int n = scores.size();
+
+		//provided by https://www.geeksforgeeks.org/bubble-sort-in-cpp/
+		// Outer loop that corresponds to the number of
+		// elements to be sorted
+		for (int i = 0; i < n - 1; i++) {
+
+			// Last i elements are already
+			// in place
+			for (int j = 0; j < n - i - 1; j++) {
+
+				int pos1 = scores[j].find_first_of(':');
+				int num1 = stoi(scores[j].substr(pos1 + 1));
+
+
+				int pos2 = scores[j+1].find_first_of(':');
+				int num2 = stoi(scores[j+1].substr(pos2 + 1));
+				// Comparing adjacent elements
+				if (num2 > num1)
+
+					// Swapping if in the wrong order
+					swap(scores[j], scores[j + 1]);
+			}
+		}
 
 		table_label->SetText(score_msg);
 		table_label->SetVisible(true);
-
+		topScore_label->SetVisible(true);
+		top1_label->SetText(scores[0]);
+		top1_label->SetVisible(true);
+		top2_label->SetText(scores[1]);
+		top2_label->SetVisible(true);
+		top3_label->SetText(scores[2]);
+		top3_label->SetVisible(true);
 	}
 }
 void Asteroids::OpenStart() {
@@ -497,6 +567,42 @@ void Asteroids::CreateGUI()
 		= static_pointer_cast<GUIComponent>(table_label);
 	mGameDisplay->GetContainer()->AddComponent(table_label_comp, GLVector2f(0.5f, 0.9f));
 
+	topScore_label = make_shared<GUILabel>("top score");
+	// Set the horizontal alignment of the label to GUI_HALIGN_CENTER
+	topScore_label->SetHorizontalAlignment(GUIComponent::GUI_HALIGN_CENTER);
+	topScore_label->SetVerticalAlignment(GUIComponent::GUI_VALIGN_MIDDLE);
+	topScore_label->SetVisible(false);
+	shared_ptr<GUIComponent> topScore_label_comp
+		= static_pointer_cast<GUIComponent>(topScore_label);
+	mGameDisplay->GetContainer()->AddComponent(topScore_label_comp, GLVector2f(0.5f, 0.8f));
+
+
+	top1_label = make_shared<GUILabel>("top score");
+	// Set the horizontal alignment of the label to GUI_HALIGN_CENTER
+	top1_label->SetHorizontalAlignment(GUIComponent::GUI_HALIGN_CENTER);
+	top1_label->SetVerticalAlignment(GUIComponent::GUI_VALIGN_MIDDLE);
+	top1_label->SetVisible(false);
+	shared_ptr<GUIComponent> top1_label_comp
+		= static_pointer_cast<GUIComponent>(top1_label);
+	mGameDisplay->GetContainer()->AddComponent(top1_label_comp, GLVector2f(0.5f, 0.7f));
+
+	top2_label = make_shared<GUILabel>("top score");
+	// Set the horizontal alignment of the label to GUI_HALIGN_CENTER
+	top2_label->SetHorizontalAlignment(GUIComponent::GUI_HALIGN_CENTER);
+	top2_label->SetVerticalAlignment(GUIComponent::GUI_VALIGN_MIDDLE);
+	top2_label->SetVisible(false);
+	shared_ptr<GUIComponent> top2_label_comp
+		= static_pointer_cast<GUIComponent>(top2_label);
+	mGameDisplay->GetContainer()->AddComponent(top2_label_comp, GLVector2f(0.5f, 0.6f));
+
+	top3_label = make_shared<GUILabel>("top score");
+	// Set the horizontal alignment of the label to GUI_HALIGN_CENTER
+	top3_label->SetHorizontalAlignment(GUIComponent::GUI_HALIGN_CENTER);
+	top3_label->SetVerticalAlignment(GUIComponent::GUI_VALIGN_MIDDLE);
+	top3_label->SetVisible(false);
+	shared_ptr<GUIComponent> top3_label_comp
+		= static_pointer_cast<GUIComponent>(top3_label);
+	mGameDisplay->GetContainer()->AddComponent(top3_label_comp, GLVector2f(0.5f, 0.5f));
 }
 
 void Asteroids::OnScoreChanged(int score)
