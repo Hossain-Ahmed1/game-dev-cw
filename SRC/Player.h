@@ -39,7 +39,12 @@ public:
 			(*lit)->OnPlayerKilled(mLives);
 		}
 	}
-
+	int getLives() {
+		return mLives;
+	}
+	void setLives(int newLives) {
+		mLives = newLives;
+	}
 private:
 	int mLives;
 

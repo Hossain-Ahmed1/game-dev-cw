@@ -47,7 +47,7 @@ public:
 	// Override the default implementation of ITimerListener ////////////////////
 	void OnTimer(int value);
 
-
+	void AddLife();
 
 private:
 	shared_ptr<Spaceship> mSpaceship;

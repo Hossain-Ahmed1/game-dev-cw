@@ -1,7 +1,8 @@
 #include "GameWorld.h"
 #include "Bullet.h"
 #include "BoundingSphere.h"
-
+#include  "Asteroids.h"
+#include <random>
 // PUBLIC INSTANCE CONSTRUCTORS ///////////////////////////////////////////////
 
 /** Constructor. Bullets live for 2s by default. */
@@ -56,5 +57,22 @@ bool Bullet::CollisionTest(shared_ptr<GameObject> o)
 
 void Bullet::OnCollision(const GameObjectList& objects)
 {
+
+	// Initialize a random number generator
+	random_device rd;
+	mt19937 gen(rd());
+	uniform_int_distribution<> powerchance(1, 2);
+	uniform_int_distribution<> powertype(1, 3);
+
+	int chance = powerchance(gen);
+	int power = powertype(gen);
+
+	if (chance == 1) {
+		if (power == 1)game->AddLife();
+	}
 	mWorld->FlagForRemoval(GetThisPtr());
+}
+
+void Bullet::SetGame(Asteroids* set_game) {
+	game = set_game;
 }

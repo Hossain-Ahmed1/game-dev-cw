@@ -146,6 +146,15 @@ void Asteroids::ShowInstructions() {
 	newt->SetVisible(true);
 	instruction4->SetVisible(true);
 }
+
+void Asteroids::AddLife() {
+	mPlayer.setLives(mPlayer.getLives() + 1);
+	std::ostringstream msg_stream;
+	msg_stream << "Lives: " << mPlayer.getLives();
+	// Get the lives left message as a string
+	std::string lives_msg = msg_stream.str();
+	mLivesLabel->SetText(lives_msg);
+}
 // PUBLIC INSTANCE METHODS IMPLEMENTING IKeyboardListener /////////////////////
 
 void Asteroids::OnKeyPressed(uchar key, int x, int y)
@@ -383,6 +392,7 @@ shared_ptr<GameObject> Asteroids::CreateSpaceship()
 	mSpaceship->SetScale(0.1f);
 	// Reset spaceship back to centre of the world
 	mSpaceship->Reset();
+	mSpaceship->SetGame(this);
 	// Return the spaceship so it can be added to the world
 	return mSpaceship;
 

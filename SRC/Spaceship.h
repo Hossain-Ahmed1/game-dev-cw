@@ -4,6 +4,7 @@
 #include "GameUtil.h"
 #include "GameObject.h"
 #include "Shape.h"
+#include "Asteroids.h"
 
 class Spaceship : public GameObject
 {
@@ -24,12 +25,15 @@ public:
 	void SetThrusterShape(shared_ptr<Shape> thruster_shape) { mThrusterShape = thruster_shape; }
 	void SetBulletShape(shared_ptr<Shape> bullet_shape) { mBulletShape = bullet_shape; }
 
+	void SetGame(Asteroids* set_game);
+
 	bool CollisionTest(shared_ptr<GameObject> o);
 	void OnCollision(const GameObjectList &objects);
 
 private:
 	float mThrust;
 
+	Asteroids* game;
 	shared_ptr<Shape> mSpaceshipShape;
 	shared_ptr<Shape> mThrusterShape;
 	shared_ptr<Shape> mBulletShape;

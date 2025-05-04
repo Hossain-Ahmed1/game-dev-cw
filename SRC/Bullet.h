@@ -3,6 +3,7 @@
 
 #include "GameUtil.h"
 #include "GameObject.h"
+#include "Asteroids.h"
 
 class Bullet : public GameObject
 {
@@ -20,8 +21,11 @@ public:
 	bool CollisionTest(shared_ptr<GameObject> o);
 	void OnCollision(const GameObjectList& objects);
 
+	void SetGame(Asteroids* set_game);
+
 protected:
 	int mTimeToLive;
+	Asteroids* game;
 };
 
 #endif

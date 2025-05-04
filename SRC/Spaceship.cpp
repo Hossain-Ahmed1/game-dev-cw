@@ -3,6 +3,7 @@
 #include "Bullet.h"
 #include "Spaceship.h"
 #include "BoundingSphere.h"
+#include "Asteroids.h"
 
 using namespace std;
 
@@ -12,6 +13,7 @@ using namespace std;
 Spaceship::Spaceship()
 	: GameObject("Spaceship"), mThrust(0)
 {
+	Asteroids* game = nullptr;
 }
 
 /** Construct a spaceship with given position, velocity, acceleration, angle, and rotation. */
@@ -83,13 +85,18 @@ void Spaceship::Shoot(void)
 	// Construct a vector for the bullet's velocity
 	GLVector3f bullet_velocity = mVelocity + spaceship_heading * bullet_speed;
 	// Construct a new bullet
-	shared_ptr<GameObject> bullet
+	shared_ptr<Bullet> bullet
 		(new Bullet(bullet_position, bullet_velocity, mAcceleration, mAngle, 0, 2000));
 	bullet->SetBoundingShape(make_shared<BoundingSphere>(bullet->GetThisPtr(), 2.0f));
 	bullet->SetShape(mBulletShape);
+	bullet->SetGame(game);
 	// Add the new bullet to the game world
 	mWorld->AddObject(bullet);
 
+}
+
+void Spaceship::SetGame(Asteroids* set_game) {
+	game = set_game;
 }
 
 bool Spaceship::CollisionTest(shared_ptr<GameObject> o)
