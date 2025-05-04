@@ -67,8 +67,9 @@ void Bullet::OnCollision(const GameObjectList& objects)
 	int chance = powerchance(gen);
 	int power = powertype(gen);
 
-	if (chance == 1) {
+	if (chance == 1 && game->getDiff()) {
 		if (power == 1)game->AddLife();
+		if (power == 2)game->turnDoub();
 	}
 	mWorld->FlagForRemoval(GetThisPtr());
 }

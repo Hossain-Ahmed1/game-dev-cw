@@ -86,12 +86,32 @@ void Spaceship::Shoot(void)
 	GLVector3f bullet_velocity = mVelocity + spaceship_heading * bullet_speed;
 	// Construct a new bullet
 	shared_ptr<Bullet> bullet
-		(new Bullet(bullet_position, bullet_velocity, mAcceleration, mAngle, 0, 2000));
+		(new Bullet(bullet_position, bullet_velocity, mAcceleration, mAngle , 0, 2000));
 	bullet->SetBoundingShape(make_shared<BoundingSphere>(bullet->GetThisPtr(), 2.0f));
 	bullet->SetShape(mBulletShape);
 	bullet->SetGame(game);
-	// Add the new bullet to the game world
 	mWorld->AddObject(bullet);
+
+	
+	if (game->getDoub())
+		{
+			GLVector3f spaceship_heading2(cos(DEG2RAD * (mAngle + 180)), sin(DEG2RAD * (mAngle + 180)), 0);
+
+		spaceship_heading2.normalize();
+		// Calculate the point at the node of the spaceship from position and heading
+		GLVector3f bullet_position2 = mPosition + (spaceship_heading2 * 4);
+		GLVector3f bullet_velocity2 = mVelocity + spaceship_heading2 * bullet_speed;
+
+
+		shared_ptr<Bullet> bullet2
+		(new Bullet(bullet_position2, bullet_velocity2, mAcceleration, mAngle, 0, 2000));
+		bullet2->SetBoundingShape(make_shared<BoundingSphere>(bullet2->GetThisPtr(), 2.0f));
+		bullet2->SetShape(mBulletShape);
+		bullet2->SetGame(game);
+		// Add the new bullet to the game world
+		mWorld->AddObject(bullet2);
+	}
+	
 
 }
 

@@ -49,6 +49,13 @@ public:
 
 	void AddLife();
 
+	bool getDiff();
+
+	bool getDoub();
+
+	void turnDoub();
+
+
 private:
 	shared_ptr<Spaceship> mSpaceship;
 
@@ -65,6 +72,7 @@ private:
 	uint mAsteroidCount;
 	string mScreen;
 	bool mDifficulty;
+	bool doubleShoot;
 
 	void ResetSpaceship();
 	shared_ptr<GameObject> CreateSpaceship();
@@ -81,6 +89,7 @@ private:
 	const static uint START_NEXT_LEVEL = 1;
 	const static uint CREATE_NEW_PLAYER = 2;
 	const static uint GO_HIGH_SCORE = 3;
+	const static uint TURN_OFF_DOUB = 4;
 
 	ScoreKeeper mScoreKeeper;
 	Player mPlayer;

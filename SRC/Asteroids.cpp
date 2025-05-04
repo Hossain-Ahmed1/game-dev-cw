@@ -44,6 +44,7 @@ Asteroids::Asteroids(int argc, char* argv[])
 	mAsteroidCount = 0;
 	mScreen = "start";
 	mDifficulty = true;
+	doubleShoot = false;
 }
 
 shared_ptr<GUIComponent> newt;
@@ -154,6 +155,20 @@ void Asteroids::AddLife() {
 	// Get the lives left message as a string
 	std::string lives_msg = msg_stream.str();
 	mLivesLabel->SetText(lives_msg);
+}
+
+bool Asteroids::getDiff() {
+	return mDifficulty;
+}
+
+bool Asteroids::getDoub() {
+	return doubleShoot;
+}
+void Asteroids::turnDoub() {
+	if (!doubleShoot) {
+		doubleShoot = true;
+		SetTimer(10000, TURN_OFF_DOUB);
+	}
 }
 // PUBLIC INSTANCE METHODS IMPLEMENTING IKeyboardListener /////////////////////
 
@@ -372,6 +387,9 @@ void Asteroids::OnTimer(int value)
 		mScreen = "game over";
 		mGameOverLabel->SetVisible(false);
 		askHighScore->SetVisible(true);
+	}
+	if (value == TURN_OFF_DOUB) {
+		doubleShoot = false;
 	}
 
 }
