@@ -45,6 +45,7 @@ Asteroids::Asteroids(int argc, char* argv[])
 	mScreen = "start";
 	mDifficulty = true;
 	doubleShoot = false;
+	invulrable = false;
 }
 
 shared_ptr<GUIComponent> newt;
@@ -168,6 +169,16 @@ void Asteroids::turnDoub() {
 	if (!doubleShoot) {
 		doubleShoot = true;
 		SetTimer(10000, TURN_OFF_DOUB);
+	}
+}
+
+bool Asteroids::getInv() {
+	return invulrable;
+}
+void Asteroids::turnInv() {
+	if (!invulrable) {
+		invulrable = true;
+		SetTimer(10000, TURN_OFF_INV);
 	}
 }
 // PUBLIC INSTANCE METHODS IMPLEMENTING IKeyboardListener /////////////////////
@@ -390,6 +401,9 @@ void Asteroids::OnTimer(int value)
 	}
 	if (value == TURN_OFF_DOUB) {
 		doubleShoot = false;
+	}
+	if (value == TURN_OFF_INV) {
+		invulrable = false;
 	}
 
 }

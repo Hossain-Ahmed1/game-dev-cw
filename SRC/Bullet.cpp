@@ -70,6 +70,7 @@ void Bullet::OnCollision(const GameObjectList& objects)
 	if (chance == 1 && game->getDiff()) {
 		if (power == 1)game->AddLife();
 		if (power == 2)game->turnDoub();
+		if (power == 3)game->turnInv();
 	}
 	mWorld->FlagForRemoval(GetThisPtr());
 }

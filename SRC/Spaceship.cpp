@@ -129,5 +129,6 @@ bool Spaceship::CollisionTest(shared_ptr<GameObject> o)
 
 void Spaceship::OnCollision(const GameObjectList &objects)
 {
+	if (!game->getInv())
 	mWorld->FlagForRemoval(GetThisPtr());
 }

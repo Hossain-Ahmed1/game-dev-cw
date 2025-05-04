@@ -55,6 +55,9 @@ public:
 
 	void turnDoub();
 
+	bool getInv();
+
+	void turnInv();
 
 private:
 	shared_ptr<Spaceship> mSpaceship;
@@ -73,6 +76,7 @@ private:
 	string mScreen;
 	bool mDifficulty;
 	bool doubleShoot;
+	bool invulrable;
 
 	void ResetSpaceship();
 	shared_ptr<GameObject> CreateSpaceship();
@@ -90,6 +94,7 @@ private:
 	const static uint CREATE_NEW_PLAYER = 2;
 	const static uint GO_HIGH_SCORE = 3;
 	const static uint TURN_OFF_DOUB = 4;
+	const static uint TURN_OFF_INV = 5;
 
 	ScoreKeeper mScoreKeeper;
 	Player mPlayer;
